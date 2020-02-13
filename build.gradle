@@ -4,8 +4,8 @@ plugins {
     id 'idea'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'fyi.sorenneedscoffee'
+version '0.1'
 
 sourceCompatibility = 1.8
 
@@ -31,4 +31,14 @@ dependencies {
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'org.apache.commons:commons-lang3:3.5'
+}
+
+jar {
+    manifest {
+        attributes (
+                'Main-Class': 'fyi.sorenneedscoffee.statistics.Statistics',
+                'Implementation-Title':   'Statistics',
+                'Implementation-Version': '0.1'
+        )
+    }
 }
