@@ -39,7 +39,8 @@ public class Statistics {
 
         CommandClientBuilder cb = new CommandClientBuilder()
                 .setOwnerId(ownerId)
-                .setActivity(Activity.watching("over you fools."));
+                .setPrefix("!>")
+                .setActivity(Activity.watching("over you fools"));
 
         CommandClient client = cb.build();
         Listener listener = new Listener(db);

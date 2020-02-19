@@ -1,8 +1,11 @@
-package fyi.sorenneedscoffee.statistics.listeners;
+package fyi.sorenneedscoffee.statistics;
 
 import fyi.sorenneedscoffee.statistics.config.Db;
+import fyi.sorenneedscoffee.statistics.data.DataSet;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.slf4j.Logger;
@@ -49,5 +52,26 @@ public class DbManager {
             log.error("JDBC experienced the following error:" + ExceptionUtils.getMessage(e) + " Please see below for details");
             log.error(ExceptionUtils.getStackTrace(e));
         }
+    }
+
+    public DataSet getStatistics(int year, int month, int day) {
+        Timestamp min = Timestamp.valueOf(year + month + day + "00:00:00");
+        Timestamp max = Timestamp.valueOf(year + month + (day+1) + "00:00:00");
+        try (Connection connect = DriverManager.getConnection(url)) {
+            DSLContext context = DSL.using(connect, SQLDialect.MARIADB);
+
+            Result<Record> result = context.select()
+                    .from(STATISTICS)
+                    .where(STATISTICS.DATE.greaterOrEqual(min))
+                    .and(STATISTICS.DATE.lessThan(max))
+                .fetch();
+
+            return new DataSet(result.intoResultSet());
+        } catch (SQLException e) {
+            log.error("JDBC experienced the following error:" + ExceptionUtils.getMessage(e) + " Please see below for details");
+            log.error(ExceptionUtils.getStackTrace(e));
+        }
+
+        return null;
     }
 }

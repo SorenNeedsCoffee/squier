@@ -11,6 +11,7 @@ sourceCompatibility = 1.8
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -30,6 +31,7 @@ dependencies {
     implementation 'org.jooq:jooq-codegen:3.12.3'
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'org.knowm.xchart:xchart:3.6.1'
     implementation 'org.apache.commons:commons-lang3:3.5'
 }
 
