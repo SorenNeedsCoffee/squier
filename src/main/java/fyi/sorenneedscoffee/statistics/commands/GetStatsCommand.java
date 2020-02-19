@@ -61,11 +61,13 @@ public class GetStatsCommand extends Command {
                 File f = new File("chart.png");
                 ImageIO.write(BitmapEncoder.getBufferedImage(chart), "png", f);
 
-                new EmbedBuilder()
-                        .setTitle("Statistics for " + Month.of(month).getDisplayName(TextStyle.FULL_STANDALONE, Locale.ENGLISH) + day + ". " + year)
-                        .setColor(new Color(8311585))
-                        .addField("Average Online Users", Double.toString(set.getAverage()), false)
-                        .build();
+                event.getChannel().sendMessage(
+                        new EmbedBuilder()
+                                .setTitle("Statistics for " + Month.of(month).getDisplayName(TextStyle.FULL_STANDALONE, Locale.ENGLISH) + day + ". " + year)
+                                .setColor(new Color(8311585))
+                                .addField("Average Online Users", Double.toString(set.getAverage()), false)
+                                .build()
+                ).queue();
                 event.getChannel().sendFile(f).queue();
             } catch (IOException e) {
                 e.printStackTrace();
