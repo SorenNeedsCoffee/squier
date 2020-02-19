@@ -1,9 +1,11 @@
 package fyi.sorenneedscoffee.statistics.data;
 
+import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.*;
 
 public class DataSet {
     private final List<DataEntry> entries = new ArrayList<>();
@@ -20,5 +22,15 @@ public class DataSet {
             userCount += e.getOnlineUsers();
 
         return userCount/entries.size();
+    }
+
+    public TreeMap<Timestamp, Integer> getMap() {
+        Map<Timestamp, Integer> map = new HashMap<>();
+
+        for(DataEntry e : entries) {
+            map.put(e.getDate(), e.getOnlineUsers());
+        }
+
+        return new TreeMap<>(map);
     }
 }
