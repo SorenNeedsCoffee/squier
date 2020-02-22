@@ -1,7 +1,7 @@
-package fyi.sorenneedscoffee.statistics;
+package fyi.sorenneedscoffee.statistics.util;
 
 import fyi.sorenneedscoffee.statistics.config.Db;
-import fyi.sorenneedscoffee.statistics.data.DataSet;
+import fyi.sorenneedscoffee.statistics.util.data.DataSet;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -15,14 +15,22 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Month;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import static fyi.sorenneedscoffee.statistics.db.tables.Statistics.STATISTICS;
 
 public class DbManager {
     private final Logger log = LoggerFactory.getLogger("DbManager");
+    private final SimpleDateFormat mst = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final String url;
 
     public DbManager(Db db) {
+        mst.setTimeZone(TimeZone.getTimeZone("Etc/GMT-7"));
+
         url = "jdbc:mariadb://" + db.getIp() + "/" + db.getDb() + "?"
                 + "user=" + db.getUser() + "&password=" + db.getPass();
         log.info("Validating connection to " + db.getDb() + " at " + db.getIp() + "...");
@@ -54,9 +62,19 @@ public class DbManager {
         }
     }
 
-    public DataSet getStatistics(int year, int month, int day) {
-        Timestamp min = Timestamp.valueOf(year + month + day + "00:00:00");
-        Timestamp max = Timestamp.valueOf(year + month + (day+1) + "00:00:00");
+    public DataSet getStatistics(int year, int month, int day, String timezone) {
+
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(timezone));
+        cal.set(year, month-1, day, 0, 0, 0);
+
+        Calendar calNextDay = Calendar.getInstance(TimeZone.getTimeZone(timezone));
+        calNextDay.set(year, month-1, day, 0, 0, 0);
+        calNextDay.add(Calendar.DATE, 1);
+
+
+
+        Timestamp min = Timestamp.valueOf(mst.format(new Date(cal.getTimeInMillis())));
+        Timestamp max = Timestamp.valueOf(mst.format(new Date(calNextDay.getTimeInMillis())));
         try (Connection connect = DriverManager.getConnection(url)) {
             DSLContext context = DSL.using(connect, SQLDialect.MARIADB);
 

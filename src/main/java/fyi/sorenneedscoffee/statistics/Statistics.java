@@ -2,10 +2,11 @@ package fyi.sorenneedscoffee.statistics;
 
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import fyi.sorenneedscoffee.statistics.commands.staff.GetStatsCommand;
 import fyi.sorenneedscoffee.statistics.config.Config;
 import fyi.sorenneedscoffee.statistics.config.ConfigManager;
-import fyi.sorenneedscoffee.statistics.config.Db;
 import fyi.sorenneedscoffee.statistics.listeners.Listener;
+import fyi.sorenneedscoffee.statistics.util.DbManager;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -35,11 +36,15 @@ public class Statistics {
 
         String token = config.getToken();
         String ownerId = config.getOwnerId();
-        Db db = config.getDb();
+        DbManager db = new DbManager(config.getDb());
 
         CommandClientBuilder cb = new CommandClientBuilder()
                 .setOwnerId(ownerId)
                 .setPrefix("!>")
+                .setEmojis("\u2705", "\u26A0", "\u26D4")
+                .addCommands(
+                        new GetStatsCommand(db)
+                )
                 .setActivity(Activity.watching("over you fools"));
 
         CommandClient client = cb.build();
@@ -67,7 +72,7 @@ public class Statistics {
             while (true) {
                 String in = console.readLine();
                 if("shutdown".equals(in))
-                    System.exit(0);
+                    shutdown();
             }
         });
         th.start();

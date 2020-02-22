@@ -1,7 +1,6 @@
 package fyi.sorenneedscoffee.statistics.listeners;
 
-import fyi.sorenneedscoffee.statistics.DbManager;
-import fyi.sorenneedscoffee.statistics.config.Db;
+import fyi.sorenneedscoffee.statistics.util.DbManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Member;
@@ -18,8 +17,8 @@ public class Listener extends ListenerAdapter {
     private DbManager db;
     private final Timer timer = new Timer();
 
-    public Listener(Db db) {
-        this.db = new DbManager(db);
+    public Listener(DbManager db) {
+        this.db = db;
     }
 
     @Override

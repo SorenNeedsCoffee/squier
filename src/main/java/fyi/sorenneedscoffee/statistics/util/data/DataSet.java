@@ -1,9 +1,7 @@
-package fyi.sorenneedscoffee.statistics.data;
+package fyi.sorenneedscoffee.statistics.util.data;
 
-import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -12,7 +10,7 @@ public class DataSet {
 
     public DataSet(ResultSet r) throws SQLException {
         while(r.next()) {
-            entries.add(new DataEntry(r.getTimestamp("date"), r.getInt("OnlineUsers")));
+            entries.add(new DataEntry(r.getTimestamp("Date"), r.getInt("OnlineUsers")));
         }
     }
 

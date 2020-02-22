@@ -21,14 +21,11 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.11'
 
     implementation 'com.jagrosh:jda-utilities:3.0.2'
-    implementation ('net.dv8tion:JDA:4.0.0_73') {
-        exclude module: 'opus-java'
-    }
+    implementation 'net.dv8tion:JDA:4.1.1_108'
 
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.5.4'
     implementation 'org.jooq:jooq:3.12.3'
     implementation 'org.jooq:jooq-meta:3.12.3'
-    implementation 'org.jooq:jooq-codegen:3.12.3'
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'org.knowm.xchart:xchart:3.6.1'
