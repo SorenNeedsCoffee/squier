@@ -5,8 +5,10 @@ import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import fyi.sorenneedscoffee.statistics.commands.staff.GetStatsCommand;
 import fyi.sorenneedscoffee.statistics.config.Config;
 import fyi.sorenneedscoffee.statistics.config.ConfigManager;
+import fyi.sorenneedscoffee.statistics.config.UsersDb;
 import fyi.sorenneedscoffee.statistics.listeners.Listener;
 import fyi.sorenneedscoffee.statistics.util.DbManager;
+import fyi.sorenneedscoffee.xputil.XPUtil;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -23,7 +25,7 @@ public class Statistics {
     private static JDA jda;
     public static final String version = Statistics.class.getPackage().getImplementationVersion();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Logger log = LoggerFactory.getLogger("Startup");
 
         if (version != null)
@@ -36,7 +38,7 @@ public class Statistics {
 
         String token = config.getToken();
         String ownerId = config.getOwnerId();
-        DbManager db = new DbManager(config.getDb());
+        DbManager db = new DbManager(config.getStatsDb());
 
         CommandClientBuilder cb = new CommandClientBuilder()
                 .setOwnerId(ownerId)
@@ -47,6 +49,11 @@ public class Statistics {
                 )
                 .setActivity(Activity.watching("over you fools"));
 
+        XPUtil xpUtil = new XPUtil(cb);
+        UsersDb usersDb = config.getUsersDb();
+        xpUtil.db(usersDb.getIp(), usersDb.getDb(), usersDb.getUser(), usersDb.getPass());
+        cb = xpUtil.builder();
+
         CommandClient client = cb.build();
         Listener listener = new Listener(db);
 
@@ -55,7 +62,7 @@ public class Statistics {
                     .setToken(token)
                     .setStatus(OnlineStatus.DO_NOT_DISTURB)
                     .setActivity(Activity.playing("loading..."))
-                    .addEventListeners(client, listener)
+                    .addEventListeners(client, listener, xpUtil.listener())
                     .build();
         } catch (LoginException ex) {
             log.error("Invalid Token");

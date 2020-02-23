@@ -1,7 +1,7 @@
 package fyi.sorenneedscoffee.statistics.util;
 
-import fyi.sorenneedscoffee.statistics.config.Db;
 import fyi.sorenneedscoffee.statistics.util.data.DataSet;
+import fyi.sorenneedscoffee.statistics.config.StatsDb;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -28,7 +28,7 @@ public class DbManager {
     private final SimpleDateFormat mst = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final String url;
 
-    public DbManager(Db db) {
+    public DbManager(StatsDb db) {
         mst.setTimeZone(TimeZone.getTimeZone("Etc/GMT-7"));
 
         url = "jdbc:mariadb://" + db.getIp() + "/" + db.getDb() + "?"

@@ -1,5 +1,6 @@
 package fyi.sorenneedscoffee.statistics.listeners;
 
+import fyi.sorenneedscoffee.statistics.config.StatsDb;
 import fyi.sorenneedscoffee.statistics.util.DbManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;

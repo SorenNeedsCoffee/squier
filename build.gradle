@@ -19,16 +19,19 @@ dependencies {
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '13.0'
 
     implementation 'org.yaml:snakeyaml:1.11'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
     implementation 'com.jagrosh:jda-utilities:3.0.2'
     implementation 'net.dv8tion:JDA:4.1.1_108'
+    implementation 'club.minnced:discord-webhooks:0.2.0'
 
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.5.4'
-    implementation 'org.jooq:jooq:3.12.3'
-    implementation 'org.jooq:jooq-meta:3.12.3'
+    implementation 'org.jooq:jooq:3.13.1'
+    implementation 'org.jooq:jooq-meta:3.13.1'
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'org.knowm.xchart:xchart:3.6.1'
+    implementation 'org.decimal4j:decimal4j:1.0.3'
     implementation 'org.apache.commons:commons-lang3:3.5'
 }
 

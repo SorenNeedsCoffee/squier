@@ -1,6 +1,6 @@
 package fyi.sorenneedscoffee.statistics.config;
 
-public final class Db {
+public final class UsersDb {
     private String ip;
     private String db;
     private String user;
