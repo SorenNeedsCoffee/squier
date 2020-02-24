@@ -1,7 +1,6 @@
-package fyi.sorenneedscoffee.statistics.listeners;
+package fyi.sorenneedscoffee.squier.listeners;
 
-import fyi.sorenneedscoffee.statistics.config.StatsDb;
-import fyi.sorenneedscoffee.statistics.util.DbManager;
+import fyi.sorenneedscoffee.squier.util.DbManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Member;

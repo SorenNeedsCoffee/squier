@@ -1,8 +1,7 @@
-package fyi.sorenneedscoffee.statistics.config;
+package fyi.sorenneedscoffee.squier.config;
 
 public final class Config {
-    private String token;
-    private String ownerId;
+    private String token, ownerId;
 
     private StatsDb statsDb;
     private UsersDb usersDb;

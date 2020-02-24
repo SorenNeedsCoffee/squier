@@ -7,7 +7,7 @@ plugins {
 group 'fyi.sorenneedscoffee'
 version '0.1'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 12
 
 repositories {
     jcenter()
@@ -38,8 +38,8 @@ dependencies {
 jar {
     manifest {
         attributes (
-                'Main-Class': 'fyi.sorenneedscoffee.statistics.Statistics',
-                'Implementation-Title':   'Statistics',
+                'Main-Class': 'fyi.sorenneedscoffee.statistics.Squier',
+                'Implementation-Title':   'SQUIER',
                 'Implementation-Version': '0.1'
         )
     }

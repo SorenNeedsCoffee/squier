@@ -1,13 +1,14 @@
-package fyi.sorenneedscoffee.statistics;
+package fyi.sorenneedscoffee.squier;
 
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import fyi.sorenneedscoffee.statistics.commands.staff.GetStatsCommand;
-import fyi.sorenneedscoffee.statistics.config.Config;
-import fyi.sorenneedscoffee.statistics.config.ConfigManager;
-import fyi.sorenneedscoffee.statistics.config.UsersDb;
-import fyi.sorenneedscoffee.statistics.listeners.Listener;
-import fyi.sorenneedscoffee.statistics.util.DbManager;
+import fyi.sorenneedscoffee.squier.commands.owner.ShutdownCmd;
+import fyi.sorenneedscoffee.squier.commands.staff.GetStatsCommand;
+import fyi.sorenneedscoffee.squier.config.Config;
+import fyi.sorenneedscoffee.squier.config.ConfigManager;
+import fyi.sorenneedscoffee.squier.config.UsersDb;
+import fyi.sorenneedscoffee.squier.listeners.Listener;
+import fyi.sorenneedscoffee.squier.util.DbManager;
 import fyi.sorenneedscoffee.xputil.XPUtil;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
@@ -20,18 +21,18 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.login.LoginException;
 import java.io.Console;
 
-public class Statistics {
+public class Squier {
     private static boolean shuttingDown = false;
     private static JDA jda;
-    public static final String version = Statistics.class.getPackage().getImplementationVersion();
+    public static final String version = Squier.class.getPackage().getImplementationVersion();
 
     public static void main(String[] args) throws Exception {
         Logger log = LoggerFactory.getLogger("Startup");
 
         if (version != null)
-            log.info("M.E Statistics | v" + version);
+            log.info("M.E Squier | v" + version);
         else
-            log.info("M.E Statistics | DEVELOPMENT MODE");
+            log.info("M.E Squier | DEVELOPMENT MODE");
 
         log.info("Loading Config...");
         Config config = ConfigManager.load();
@@ -45,7 +46,9 @@ public class Statistics {
                 .setPrefix("!>")
                 .setEmojis("\u2705", "\u26A0", "\u26D4")
                 .addCommands(
-                        new GetStatsCommand(db)
+                        new GetStatsCommand(db),
+
+                        new ShutdownCmd()
                 )
                 .setActivity(Activity.watching("over you fools"));
 
@@ -70,7 +73,7 @@ public class Statistics {
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            LoggerFactory.getLogger("M.E Statistics").info("Shutting down...");
+            LoggerFactory.getLogger("M.E Squier").info("Shutting down...");
             shutdown();
         }));
 

@@ -1,4 +1,4 @@
-package fyi.sorenneedscoffee.statistics.config;
+package fyi.sorenneedscoffee.squier.config;
 
 public final class StatsDb {
     private String ip;

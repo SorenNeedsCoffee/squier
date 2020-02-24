@@ -1,4 +1,4 @@
-package fyi.sorenneedscoffee.statistics.commands;
+package fyi.sorenneedscoffee.squier.commands;
 
 import com.jagrosh.jdautilities.command.Command;
 import net.dv8tion.jda.api.Permission;

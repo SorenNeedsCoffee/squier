@@ -1,4 +1,4 @@
-package fyi.sorenneedscoffee.statistics.util.data;
+package fyi.sorenneedscoffee.squier.util.data;
 
 import java.sql.Timestamp;
 
