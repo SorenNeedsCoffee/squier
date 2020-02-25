@@ -38,7 +38,7 @@ dependencies {
 jar {
     manifest {
         attributes (
-                'Main-Class': 'fyi.sorenneedscoffee.statistics.Squier',
+                'Main-Class': 'fyi.sorenneedscoffee.squier.Squier',
                 'Implementation-Title':   'SQUIER',
                 'Implementation-Version': '0.1'
         )

@@ -3,6 +3,7 @@ package fyi.sorenneedscoffee.squier.commands.staff;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import fyi.sorenneedscoffee.squier.commands.StaffCommand;
 import fyi.sorenneedscoffee.squier.util.DbManager;
+import fyi.sorenneedscoffee.squier.util.TimeUtil;
 import fyi.sorenneedscoffee.squier.util.data.DataEntry;
 import fyi.sorenneedscoffee.squier.util.data.DataSet;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -19,7 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.List;
@@ -45,14 +50,11 @@ public class GetStatsCommand extends StaffCommand {
         }
 
         String[] splitArgs = args.split(" ");
-        String[] splitDate = splitArgs[0].split("-");
 
-        int year = Integer.parseInt(splitDate[0]);
-        int month = Integer.parseInt(splitDate[1]);
-        int day = Integer.parseInt(splitDate[2]);
+        String date = splitArgs[0];
         String timezone = "Etc/" + splitArgs[1];
 
-        DataSet set = db.getStatistics(year, month, day, timezone);
+        DataSet set = db.getStatistics(date, timezone);
 
         if(set == null || set.isEmpty()) {
             event.replyError("Error parsing data. Is the date formatted correctly?");
@@ -63,16 +65,12 @@ public class GetStatsCommand extends StaffCommand {
         List<Timestamp> times = new ArrayList<>();
         List<Integer> oUsers = new ArrayList<>();
 
-        Calendar offset = Calendar.getInstance(TimeZone.getTimeZone(timezone));
-        offset.set(year, month-1, day, 0, 0, 0);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
         for(Map.Entry<Timestamp, Integer> e : map.entrySet()) {
+            LocalDateTime t = e.getKey().toLocalDateTime();
             times.add(Timestamp.valueOf(
-                sdf.format(new Date(e.getKey().getTime() +
-                    TimeZone.getTimeZone(timezone).getOffset(offset.getTimeInMillis()))
+                    TimeUtil.formatter.format(TimeUtil.fromUTC(t, ZoneId.of(timezone)))
                 )
-            ));
+            );
             oUsers.add(e.getValue());
         }
 
@@ -97,15 +95,19 @@ public class GetStatsCommand extends StaffCommand {
 
             event.getChannel().sendMessage(
                     new EmbedBuilder()
-                            .setTitle("Squier for " + Month.of(month).getDisplayName(TextStyle.FULL_STANDALONE, Locale.ENGLISH) + " " + day + ", " + year)
+                            .setTitle("Statistics for " + date)
                             .setColor(new Color(8311585))
                             .addField("Average Online Users", Double.toString(set.getAverage()), false)
-                            .addField("Most Online Users", sdf.format(new Date(max.getDate().getTime() +
-                                    TimeZone.getTimeZone(timezone).getOffset(offset.getTimeInMillis()))
-                            ) + " | " + max.getOnlineUsers(), false)
-                            .addField("Least Online Users", sdf.format(new Date(min.getDate().getTime() +
-                                    TimeZone.getTimeZone(timezone).getOffset(offset.getTimeInMillis()))
-                            ) + " | " + min.getOnlineUsers(), false)
+                            .addField("Most Online Users",
+                            TimeUtil.formatter.format(TimeUtil.fromUTC(max.getDate().toLocalDateTime(), ZoneId.of(timezone)))
+                                    + " | " + max.getOnlineUsers(),
+                                    false
+                            )
+                            .addField("Least Online Users",
+                                    TimeUtil.formatter.format(TimeUtil.fromUTC(min.getDate().toLocalDateTime(), ZoneId.of(timezone)))
+                                    + " | " + min.getOnlineUsers(),
+                                    false
+                            )
                             .build()
             ).queue();
             event.getChannel().sendFile(f).queue();
