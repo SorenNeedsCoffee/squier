@@ -37,7 +37,7 @@ public class GetStatsCommand extends StaffCommand {
 
         this.name = "stats";
         this.help = "displays stats for a given day";
-        this.arguments = "<date (formatted as year-month-day, cannot be blank!)> <timezone (in gmt format, such as GMT-7)>";
+        this.arguments = "<date (formatted as year-month-day, cannot be blank!)> <timezone (must be in continent/city, for example America/Denver)>";
     }
 
     @Override
@@ -52,7 +52,7 @@ public class GetStatsCommand extends StaffCommand {
         String[] splitArgs = args.split(" ");
 
         String date = splitArgs[0];
-        String timezone = "Etc/" + splitArgs[1];
+        String timezone = splitArgs[1];
 
         DataSet set = db.getStatistics(date, timezone);
 

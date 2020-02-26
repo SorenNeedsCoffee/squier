@@ -48,9 +48,7 @@ public class DbManager {
     }
 
     public void saveTally(int tally) {
-        LocalDateTime now = LocalDateTime.now();
-        ZonedDateTime utc = TimeUtil.toUTC(now, system);
-        Timestamp stamp = Timestamp.valueOf(TimeUtil.formatter.format(utc));
+        Timestamp stamp = Timestamp.valueOf(TimeUtil.formatter.withZone(ZoneOffset.UTC).format(Instant.now()));
 
         try (Connection connect = DriverManager.getConnection(url)) {
             DSLContext context = DSL.using(connect, SQLDialect.MARIADB);
@@ -68,8 +66,8 @@ public class DbManager {
     public DataSet getStatistics(String date, String timezone) {
         LocalDateTime localDate = LocalDateTime.parse(date + " 00:00:00", parser);
 
-        Timestamp min = Timestamp.valueOf(TimeUtil.formatter.format(TimeUtil.toUTC(localDate, ZoneId.of(timezone))));
-        Timestamp max = Timestamp.valueOf(TimeUtil.formatter.format(TimeUtil.toUTC(localDate.plusDays(1), ZoneId.of(timezone))));
+        Timestamp min = Timestamp.valueOf(TimeUtil.formatter.withZone(ZoneOffset.UTC).format(Instant.from(localDate.atZone(ZoneId.of(timezone)))));
+        Timestamp max = Timestamp.valueOf(TimeUtil.formatter.withZone(ZoneOffset.UTC).format(TimeUtil.toUTC(localDate.plusDays(1), ZoneId.of(timezone))));
         try (Connection connect = DriverManager.getConnection(url)) {
             DSLContext context = DSL.using(connect, SQLDialect.MARIADB);
 
