@@ -9,7 +9,7 @@ public class DataSet {
     private final List<DataEntry> entries = new ArrayList<>();
 
     public DataSet(ResultSet r) throws SQLException {
-        while(r.next()) {
+        while (r.next()) {
             entries.add(new DataEntry(r.getTimestamp("Date"), r.getInt("OnlineUsers")));
         }
     }
@@ -20,18 +20,18 @@ public class DataSet {
 
     public double getAverage() {
         int userCount = 0;
-        for(DataEntry e : entries)
+        for (DataEntry e : entries)
             userCount += e.getOnlineUsers();
 
-        return userCount/entries.size();
+        return userCount / entries.size();
     }
 
     public DataEntry getMax() {
         DataEntry result = null;
         int max = 0;
 
-        for(DataEntry e : entries) {
-            if(e.getOnlineUsers() >= max) {
+        for (DataEntry e : entries) {
+            if (e.getOnlineUsers() >= max) {
                 max = e.getOnlineUsers();
                 result = e;
             }
@@ -44,8 +44,8 @@ public class DataSet {
         DataEntry result = null;
         int min = getMax().getOnlineUsers();
 
-        for(DataEntry e : entries) {
-            if(e.getOnlineUsers() <= min) {
+        for (DataEntry e : entries) {
+            if (e.getOnlineUsers() <= min) {
                 min = e.getOnlineUsers();
                 result = e;
             }
@@ -57,7 +57,7 @@ public class DataSet {
     public TreeMap<Timestamp, Integer> getMap() {
         Map<Timestamp, Integer> map = new HashMap<>();
 
-        for(DataEntry e : entries) {
+        for (DataEntry e : entries) {
             map.put(e.getDate(), e.getOnlineUsers());
         }
 

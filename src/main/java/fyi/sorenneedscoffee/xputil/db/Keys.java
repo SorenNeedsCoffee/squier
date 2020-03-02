@@ -6,17 +6,16 @@ package fyi.sorenneedscoffee.xputil.db;
 
 import fyi.sorenneedscoffee.xputil.db.tables.Users;
 import fyi.sorenneedscoffee.xputil.db.tables.records.UsersRecord;
-
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
 
 
 /**
- * A class modelling foreign key relationships and constraints of tables of 
+ * A class modelling foreign key relationships and constraints of tables of
  * the <code>s13_users</code> schema.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes" })
+@SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Keys {
 
     // -------------------------------------------------------------------------
@@ -40,6 +39,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<UsersRecord> KEY_USERS_PRIMARY = Internal.createUniqueKey(Users.USERS, "KEY_users_PRIMARY", new TableField[] { Users.USERS.ID }, true);
+        public static final UniqueKey<UsersRecord> KEY_USERS_PRIMARY = Internal.createUniqueKey(Users.USERS, "KEY_users_PRIMARY", new TableField[]{Users.USERS.ID}, true);
     }
 }

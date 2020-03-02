@@ -10,7 +10,7 @@ import fyi.sorenneedscoffee.xputil.db.tables.Users;
 /**
  * Convenience access to all tables in s13_users
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes" })
+@SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Tables {
 
     /**

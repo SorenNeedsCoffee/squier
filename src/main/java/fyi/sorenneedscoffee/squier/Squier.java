@@ -1,7 +1,9 @@
 package fyi.sorenneedscoffee.squier;
 
+import com.ea.async.Async;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import fyi.sorenneedscoffee.squier.commands.owner.ShutdownCmd;
 import fyi.sorenneedscoffee.squier.commands.staff.GetStatsCommand;
 import fyi.sorenneedscoffee.squier.config.Config;
@@ -22,9 +24,10 @@ import javax.security.auth.login.LoginException;
 import java.io.Console;
 
 public class Squier {
+    public static final String version = Squier.class.getPackage().getImplementationVersion();
+    public static EventWaiter waiter = new EventWaiter();
     private static boolean shuttingDown = false;
     private static JDA jda;
-    public static final String version = Squier.class.getPackage().getImplementationVersion();
 
     public static void main(String[] args) throws Exception {
         Logger log = LoggerFactory.getLogger("Startup");
@@ -33,6 +36,9 @@ public class Squier {
             log.info("M.E Squier | v" + version);
         else
             log.info("M.E Squier | DEVELOPMENT MODE");
+
+        log.info("Initialising async client..");
+        Async.init();
 
         log.info("Loading Config...");
         Config config = ConfigManager.load();
@@ -65,7 +71,7 @@ public class Squier {
                     .setToken(token)
                     .setStatus(OnlineStatus.DO_NOT_DISTURB)
                     .setActivity(Activity.playing("loading..."))
-                    .addEventListeners(client, listener, xpUtil.listener())
+                    .addEventListeners(client, waiter, listener, xpUtil.listener())
                     .build();
         } catch (LoginException ex) {
             log.error("Invalid Token");
@@ -81,7 +87,7 @@ public class Squier {
         Thread th = new Thread(() -> {
             while (true) {
                 String in = console.readLine();
-                if("shutdown".equals(in))
+                if ("shutdown".equals(in))
                     shutdown();
             }
         });

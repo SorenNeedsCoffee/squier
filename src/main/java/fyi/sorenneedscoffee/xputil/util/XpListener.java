@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -41,6 +40,69 @@ public class XpListener extends ListenerAdapter {
     public static void replaceRole(Guild guild, Member member, String regex, String replace) {
         Objects.requireNonNull(guild).removeRoleFromMember(member, Objects.requireNonNull(jda.getRoleById(regex))).queue();
         Objects.requireNonNull(guild).addRoleToMember(member, Objects.requireNonNull(jda.getRoleById(replace))).queue();
+    }
+
+    public static void addXP(net.dv8tion.jda.api.entities.User user, double amt) {
+        User update = UserManager.getUser(user.getId());
+        update.addXp(amt);
+        if (update.getXp() >= XpInfo.lvlXpRequirementTotal(update.getLvl())) {
+            onLvlUp(user, guild.getDefaultChannel(), update);
+        }
+        UserManager.updateUser(update);
+    }
+
+    static void onLvlUp(net.dv8tion.jda.api.entities.User user, TextChannel channel, User update) {
+        update.setLvl(update.getLvl() + 1);
+
+        String name;
+        if (guild.getMember(user).getNickname() != null) {
+            name = guild.getMember(user).getNickname();
+        } else {
+            name = user.getName();
+        }
+
+
+        try {
+            Webhook hook = channel.createWebhook(name).setAvatar(Icon.from(new URL(user.getAvatarUrl()).openStream())).complete();
+
+            if (update.getLvl() != 1) {
+                WebhookEmbedBuilder embed = new WebhookEmbedBuilder();
+                float[] rgb;
+
+                embed.setTitle(new WebhookEmbed.EmbedTitle("Level up!", null));
+                embed.setDescription("Congrats to " + name + " for reaching level " + update.getLvl() + "!");
+                rgb = Color.RGBtoHSB(204, 255, 94, null);
+                embed.setColor(Color.getHSBColor(rgb[0], rgb[1], rgb[2]).getRGB());
+
+                WebhookClient client = WebhookClient.withUrl(hook.getUrl());
+                client.send(embed.build());
+                client.close();
+            }
+
+            hook.delete().complete();
+        } catch (IOException ignore) {
+        }
+
+        switch (update.getLvl()) {
+            case 5:
+                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL1.getId(), LvlRoleIDs.LVL5.getId());
+            case 10:
+                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL5.getId(), LvlRoleIDs.LVL10.getId());
+            case 15:
+                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL10.getId(), LvlRoleIDs.LVL15.getId());
+            case 20:
+                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL15.getId(), LvlRoleIDs.LVL20.getId());
+            case 30:
+                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL20.getId(), LvlRoleIDs.LVL30.getId());
+            case 40:
+                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL30.getId(), LvlRoleIDs.LVL40.getId());
+            case 50:
+                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL40.getId(), LvlRoleIDs.LVL50.getId());
+            case 75:
+                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL50.getId(), LvlRoleIDs.LVL75.getId());
+            case 100:
+                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL75.getId(), LvlRoleIDs.LVL100.getId());
+        }
     }
 
     @Override
@@ -100,68 +162,6 @@ public class XpListener extends ListenerAdapter {
                     cooldown.remove(event.getAuthor().getId());
                 }
             }, 5000);
-        }
-    }
-
-    public static void addXP(net.dv8tion.jda.api.entities.User user, double amt) {
-        User update = UserManager.getUser(user.getId());
-        update.addXp(amt);
-        if (update.getXp() >= XpInfo.lvlXpRequirementTotal(update.getLvl())) {
-            onLvlUp(user, guild.getDefaultChannel(), update);
-        }
-        UserManager.updateUser(update);
-    }
-
-    static void onLvlUp(net.dv8tion.jda.api.entities.User user, TextChannel channel, User update) {
-        update.setLvl(update.getLvl() + 1);
-
-        String name;
-        if (guild.getMember(user).getNickname() != null) {
-            name = guild.getMember(user).getNickname();
-        } else {
-            name = user.getName();
-        }
-
-
-        try {
-            Webhook hook = channel.createWebhook(name).setAvatar(Icon.from(new URL(user.getAvatarUrl()).openStream())).complete();
-
-            if(update.getLvl() != 1) {
-                WebhookEmbedBuilder embed = new WebhookEmbedBuilder();
-                float[] rgb;
-
-                embed.setTitle(new WebhookEmbed.EmbedTitle("Level up!", null));
-                embed.setDescription("Congrats to " + name + " for reaching level " + update.getLvl() + "!");
-                rgb = Color.RGBtoHSB(204, 255, 94, null);
-                embed.setColor(Color.getHSBColor(rgb[0], rgb[1], rgb[2]).getRGB());
-
-                WebhookClient client = WebhookClient.withUrl(hook.getUrl());
-                client.send(embed.build());
-                client.close();
-            }
-
-            hook.delete().complete();
-        } catch (IOException ignore) {}
-
-        switch (update.getLvl()) {
-            case 5:
-                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL1.getId(), LvlRoleIDs.LVL5.getId());
-            case 10:
-                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL5.getId(), LvlRoleIDs.LVL10.getId());
-            case 15:
-                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL10.getId(), LvlRoleIDs.LVL15.getId());
-            case 20:
-                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL15.getId(), LvlRoleIDs.LVL20.getId());
-            case 30:
-                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL20.getId(), LvlRoleIDs.LVL30.getId());
-            case 40:
-                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL30.getId(), LvlRoleIDs.LVL40.getId());
-            case 50:
-                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL40.getId(), LvlRoleIDs.LVL50.getId());
-            case 75:
-                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL50.getId(), LvlRoleIDs.LVL75.getId());
-            case 100:
-                replaceRole(guild, guild.getMember(user), LvlRoleIDs.LVL75.getId(), LvlRoleIDs.LVL100.getId());
         }
     }
 }

@@ -31,7 +31,7 @@ class DbManager {
                 + "user=" + user + "&password=" + pass;
         log.info("Validating connection to " + db + " at " + ip + "...");
 
-        try (Connection connect = DriverManager.getConnection(url);) {
+        try (Connection connect = DriverManager.getConnection(url)) {
             if (connect.isValid(5))
                 log.info("Success.");
             else
@@ -88,7 +88,7 @@ class DbManager {
                     .where(USERS.ID.eq(id))
                     .fetch();
 
-            if(!result.isEmpty()) {
+            if (!result.isEmpty()) {
                 Record r = result.get(0);
                 return new User(r.getValue(USERS.ID), r.getValue(USERS.XP), r.getValue(USERS.LVL));
             }
@@ -107,7 +107,7 @@ class DbManager {
                     .fetch();
 
             List<User> users = new ArrayList<>();
-            for(Record r : result)
+            for (Record r : result)
                 users.add(new User(r.getValue(USERS.ID), r.getValue(USERS.XP), r.getValue(USERS.LVL)));
 
             return users;

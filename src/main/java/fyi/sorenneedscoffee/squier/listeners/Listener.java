@@ -13,9 +13,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Listener extends ListenerAdapter {
+    private final Timer timer = new Timer();
     private JDA jda;
     private DbManager db;
-    private final Timer timer = new Timer();
 
     public Listener(DbManager db) {
         this.db = db;
@@ -34,8 +34,8 @@ public class Listener extends ListenerAdapter {
                 for (Member member : members) {
                     User user = member.getUser();
 
-                    if(!(user.isBot() || user.isFake())) {
-                        if(member.getOnlineStatus().equals(OnlineStatus.ONLINE) || member.getOnlineStatus().equals(OnlineStatus.IDLE))
+                    if (!(user.isBot() || user.isFake())) {
+                        if (member.getOnlineStatus().equals(OnlineStatus.ONLINE) || member.getOnlineStatus().equals(OnlineStatus.IDLE))
                             tally++;
                     }
                 }

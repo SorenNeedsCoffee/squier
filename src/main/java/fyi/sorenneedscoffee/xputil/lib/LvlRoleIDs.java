@@ -26,14 +26,14 @@ public enum LvlRoleIDs {
     public static String getLvlRole(int lvl) {
         return isBetween(lvl, 1, 4) ? LVL1.getId() :
                 isBetween(lvl, 5, 9) ? LVL5.getId() :
-                isBetween(lvl, 10, 14) ? LVL10.getId() :
-                isBetween(lvl, 15, 19) ? LVL15.getId() :
-                isBetween(lvl, 20, 29) ? LVL20.getId() :
-                isBetween(lvl, 30, 39) ? LVL30.getId() :
-                isBetween(lvl, 40, 49) ? LVL40.getId() :
-                isBetween(lvl, 50, 74) ? LVL50.getId() :
-                isBetween(lvl, 75, 99) ? LVL75.getId() :
-                LVL100.getId();
+                        isBetween(lvl, 10, 14) ? LVL10.getId() :
+                                isBetween(lvl, 15, 19) ? LVL15.getId() :
+                                        isBetween(lvl, 20, 29) ? LVL20.getId() :
+                                                isBetween(lvl, 30, 39) ? LVL30.getId() :
+                                                        isBetween(lvl, 40, 49) ? LVL40.getId() :
+                                                                isBetween(lvl, 50, 74) ? LVL50.getId() :
+                                                                        isBetween(lvl, 75, 99) ? LVL75.getId() :
+                                                                                LVL100.getId();
     }
 
     private static boolean isBetween(int x, int lower, int upper) {

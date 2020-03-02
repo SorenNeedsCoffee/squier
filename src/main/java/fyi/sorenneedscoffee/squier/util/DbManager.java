@@ -1,7 +1,7 @@
 package fyi.sorenneedscoffee.squier.util;
 
-import fyi.sorenneedscoffee.squier.util.data.DataSet;
 import fyi.sorenneedscoffee.squier.config.StatsDb;
+import fyi.sorenneedscoffee.squier.util.data.DataSet;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -15,20 +15,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 import static fyi.sorenneedscoffee.squier.db.tables.Statistics.STATISTICS;
 
 public class DbManager {
     private final Logger log = LoggerFactory.getLogger("DbManager");
-    private final DateTimeFormatter parser = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final ZoneId system = ZoneId.systemDefault();
     private final String url;
 
     public DbManager(StatsDb db) {
@@ -63,11 +60,18 @@ public class DbManager {
         }
     }
 
-    public DataSet getStatistics(String date, String timezone) {
-        LocalDateTime localDate = LocalDateTime.parse(date + " 00:00:00", parser);
+    public DataSet getStatistics(String date, ZoneId timezone) {
+        LocalDateTime localDate = LocalDateTime.parse(date + " 00:00:00", TimeUtil.parser);
 
-        Timestamp min = Timestamp.valueOf(TimeUtil.formatter.withZone(ZoneOffset.UTC).format(Instant.from(localDate.atZone(ZoneId.of(timezone)))));
-        Timestamp max = Timestamp.valueOf(TimeUtil.formatter.withZone(ZoneOffset.UTC).format(TimeUtil.toUTC(localDate.plusDays(1), ZoneId.of(timezone))));
+        Timestamp min = Timestamp.valueOf(
+                TimeUtil.formatter.withZone(ZoneOffset.UTC)
+                        .format(TimeUtil.toUTC(localDate, timezone))
+        );
+        Timestamp max = Timestamp.valueOf(
+                TimeUtil.formatter.withZone(ZoneOffset.UTC)
+                        .format(TimeUtil.toUTC(localDate.plusDays(1), timezone))
+        );
+
         try (Connection connect = DriverManager.getConnection(url)) {
             DSLContext context = DSL.using(connect, SQLDialect.MARIADB);
 
@@ -75,7 +79,7 @@ public class DbManager {
                     .from(STATISTICS)
                     .where(STATISTICS.DATE.greaterOrEqual(min))
                     .and(STATISTICS.DATE.lessThan(max))
-                .fetch();
+                    .fetch();
 
             return new DataSet(result.intoResultSet());
         } catch (SQLException e) {
